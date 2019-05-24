@@ -20,12 +20,12 @@ namespace DroneDelivery_before.Controllers
             this.logger = logger;
         }
 
-        // PUT api/deliveries/5
-        [HttpPut("{id}")]
+        // POST api/deliveries
+        [HttpPost()]
         [ProducesResponseType(typeof(Delivery), 201)]
-        public async Task<IActionResult> Put([FromBody]Delivery delivery, string id)
+        public async Task<IActionResult> Post([FromBody]Delivery delivery)
         {
-            logger.LogInformation("In Put action with delivery {Id}: {Delivery}", id, delivery);
+            logger.LogInformation("In Post action: {Delivery}", delivery);
 
             var success = await requestProcessor.ProcessDeliveryRequestAsync(delivery);
 
