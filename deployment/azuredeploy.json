@@ -1,0 +1,209 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "applicationInsightsName": {
+            "defaultValue": "[concat('AI-MicroservicesLearnModule-', substring(uniqueString(resourceGroup().id),0,6))]",
+            "type": "String"
+        },
+        "websiteName": {
+            "defaultValue": "[concat('microserviceslearnmodule-', substring(uniqueString(resourceGroup().id),0,3))]",
+            "type": "string"
+        },
+        "location": {
+            "defaultValue": "[resourceGroup().location]",
+            "type": "string"
+        },
+        "hostingPlanName": {
+            "defaultValue": "[concat('microserviceslearnmodule-ASP-', substring(uniqueString(resourceGroup().id),0,3))]",
+            "type": "string"
+        },
+        "alwaysOn": {
+            "defaultValue": true,
+            "type": "bool"
+        },
+        "sku": {
+            "defaultValue": "Standard",
+            "type": "string"
+        },
+        "skuCode": {
+            "defaultValue": "S1",
+            "type": "string"
+        },
+        "workerSize": {
+            "defaultValue": "0",
+            "type": "string"
+        },
+        "workerSizeId": {
+            "defaultValue": "0",
+            "type": "string"
+        },
+        "numberOfWorkers": {
+            "defaultValue": "1",
+            "type": "string"
+        },
+        "currentStack": {
+            "defaultValue": "dotnetcore",
+            "type": "string"
+        },
+        "functionName":{
+            "defaultValue": "[concat('packageservicefunction-', substring(uniqueString(resourceGroup().id),0,3))]",
+            "type": "string"
+        },
+        "storageName":{
+            "defaultValue": "[concat('packagesvcfunc', substring(uniqueString(resourceGroup().id),0,3))]",
+            "type": "string"
+        }
+    },
+
+    "resources": [
+        {
+            "apiVersion": "2018-02-01",
+            "name": "[parameters('websiteName')]",
+            "type": "Microsoft.Web/sites",
+            "location": "[parameters('location')]",
+            "tags": null,
+            "dependsOn": [
+                "[concat('microsoft.insights/components/', parameters('applicationInsightsName'))]",
+                "[concat('Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]"
+            ],
+            "properties": {
+                "name": "[parameters('websiteName')]",
+                "siteConfig": {
+                    "appSettings": [
+                        {
+                            "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+                            "value": "[reference(concat('microsoft.insights/components/', parameters('applicationInsightsName')), '2015-05-01').InstrumentationKey]"
+                        },
+                        {
+                            "name": "ApplicationInsightsAgent_EXTENSION_VERSION",
+                            "value": "~2"
+                        },
+                        {
+                            "name": "XDT_MicrosoftApplicationInsights_Mode",
+                            "value": "default"
+                        },
+                        {
+                            "name": "DiagnosticServices_EXTENSION_VERSION",
+                            "value": "disabled"
+                        },
+                        {
+                            "name": "APPINSIGHTS_PROFILERFEATURE_VERSION",
+                            "value": "disabled"
+                        },
+                        {
+                            "name": "APPINSIGHTS_SNAPSHOTFEATURE_VERSION",
+                            "value": "disabled"
+                        },
+                        {
+                            "name": "InstrumentationEngine_EXTENSION_VERSION",
+                            "value": "disabled"
+                        },
+                        {
+                            "name": "SnapshotDebugger_EXTENSION_VERSION",
+                            "value": "disabled"
+                        },
+                        {
+                            "name": "XDT_MicrosoftApplicationInsights_BaseExtensions",
+                            "value": "disabled"
+                        }
+                    ],
+                    "metadata": [
+                        {
+                            "name": "CURRENT_STACK",
+                            "value": "[parameters('currentStack')]"
+                        }
+                    ],
+                    "alwaysOn": "[parameters('alwaysOn')]"
+                },
+                "serverFarmId": "[concat(resourceGroup().id, '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
+                "clientAffinityEnabled": true
+            }
+        },
+        {
+            "apiVersion": "2018-02-01",
+            "name": "[parameters('hostingPlanName')]",
+            "type": "Microsoft.Web/serverfarms",
+            "location": "[parameters('location')]",
+            "kind": "",
+            "tags": null,
+            "properties": {
+                "name": "[parameters('hostingPlanName')]",
+                "workerSize": "[parameters('workerSize')]",
+                "workerSizeId": "[parameters('workerSizeId')]",
+                "numberOfWorkers": "[parameters('numberOfWorkers')]"
+            },
+            "sku": {
+                "Tier": "[parameters('sku')]",
+                "Name": "[parameters('skuCode')]"
+            }
+        },
+        {
+            "apiVersion": "2015-05-01",
+            "name": "[parameters('applicationInsightsName')]",
+            "type": "microsoft.insights/components",
+            "location": "[parameters('location')]",
+            "kind": "web",
+            "properties": {
+                "Application_Type": "web",
+                "Request_Source": "IbizaWebAppExtensionCreate"
+            }
+        },
+        {
+            "name": "[parameters('functionName')]",
+            "type": "Microsoft.Web/sites",
+            "properties": {
+                "siteConfig": {
+                    "appSettings": [
+                        {
+                            "name": "FUNCTIONS_WORKER_RUNTIME",
+                            "value": "dotnet"
+                        },
+                        {
+                            "name": "AzureWebJobsStorage",
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageName')), '2015-05-01-preview').key1)]"
+                        },
+                        {
+                            "name": "FUNCTIONS_EXTENSION_VERSION",
+                            "value": "~2"
+                        },
+                        {
+                            "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageName')), '2015-05-01-preview').key1)]"
+                        },
+                        {
+                            "name": "WEBSITE_CONTENTSHARE",
+                            "value": "[concat(toLower(parameters('functionName')), substring(uniqueString(resourceGroup().id),0,3))]"
+                        },
+                        {
+                            "name": "WEBSITE_NODE_DEFAULT_VERSION",
+                            "value": "10.14.1"
+                        },
+                        {
+                            "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+                            "value": "[reference(concat('microsoft.insights/components/', parameters('applicationInsightsName')), '2015-05-01').InstrumentationKey]"
+                        }
+                    ]
+                },
+                "name": "[parameters('functionName')]",
+                "clientAffinityEnabled": false,
+                "reserved": false
+            },
+            "apiVersion": "2016-03-01",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageName'))]"
+            ],
+            "location": "[parameters('location')]",
+            "kind": "functionapp"
+        },
+        {
+            "apiVersion": "2015-05-01-preview",
+            "type": "Microsoft.Storage/storageAccounts",
+            "name": "[parameters('storageName')]",
+            "location": "[parameters('location')]",
+            "properties": {
+                "accountType": "Standard_LRS"
+            }
+        }
+    ]
+}
