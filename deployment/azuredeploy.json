@@ -106,6 +106,14 @@
                         {
                             "name": "XDT_MicrosoftApplicationInsights_BaseExtensions",
                             "value": "disabled"
+                        },
+                        {
+                            "name": "PackageServiceUri",
+                            "value": "[concat('https://', parameters('functionName'), '.azurewebsites.net/api/packages/')]"
+                        },
+                        {
+                            "name": "PackageServiceFunctionCode",
+                            "value": "Please put the code from accessing the PackageService Function here"
                         }
                     ],
                     "metadata": [
