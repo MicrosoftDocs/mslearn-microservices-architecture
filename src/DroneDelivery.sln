@@ -5,8 +5,6 @@ VisualStudioVersion = 15.0.28307.572
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DroneDelivery-before", "DroneDelivery-before\DroneDelivery-before.csproj", "{EF64D1F0-26D3-4AEA-92B5-4A07965EABAF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebAndLoadTestProject", "WebAndLoadTestProject\WebAndLoadTestProject.csproj", "{F540B126-D659-4DA5-B128-E18E17807E51}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{96975B09-2DA2-4E2A-A97A-C17A4B39B4C5}"
 	ProjectSection(SolutionItems) = preProject
 		Local.testsettings = Local.testsettings
@@ -32,10 +30,6 @@ Global
 		{EF64D1F0-26D3-4AEA-92B5-4A07965EABAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EF64D1F0-26D3-4AEA-92B5-4A07965EABAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EF64D1F0-26D3-4AEA-92B5-4A07965EABAF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F540B126-D659-4DA5-B128-E18E17807E51}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F540B126-D659-4DA5-B128-E18E17807E51}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F540B126-D659-4DA5-B128-E18E17807E51}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F540B126-D659-4DA5-B128-E18E17807E51}.Release|Any CPU.Build.0 = Release|Any CPU
 		{ED1CA726-3504-400D-A864-9AE21ABE5E80}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{ED1CA726-3504-400D-A864-9AE21ABE5E80}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ED1CA726-3504-400D-A864-9AE21ABE5E80}.Release|Any CPU.ActiveCfg = Release|Any CPU

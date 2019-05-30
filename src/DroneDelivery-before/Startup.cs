@@ -27,7 +27,7 @@ namespace DroneDelivery_before
                 .AddTransient<IPackageProcessor, PackageProcessor>()
                 .AddTransient<IRequestProcessor, RequestProcessor>();
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             // Enable swagger doc
             services.AddSwaggerGen(c =>
