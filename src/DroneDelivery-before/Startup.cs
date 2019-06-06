@@ -56,11 +56,17 @@ namespace DroneDelivery_before
             // specifying the Swagger JSON endpoint.
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "DroneDelivery-before API v1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "DroneDelivery-before (Monolith) API v1");
             });
 
             app.UseHttpsRedirection();
-            app.UseMvc();
+
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller=Home}/{action=Index}/{id?}");
+            });
         }
     }
 }
