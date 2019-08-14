@@ -19,15 +19,15 @@
             "type": "string"
         },
         "alwaysOn": {
-            "defaultValue": true,
+            "defaultValue": false,
             "type": "bool"
         },
         "sku": {
-            "defaultValue": "Standard",
+            "defaultValue": "Free",
             "type": "string"
         },
         "skuCode": {
-            "defaultValue": "S1",
+            "defaultValue": "F1",
             "type": "string"
         },
         "workerSize": {
