@@ -2,35 +2,38 @@
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using DroneDelivery.Common.Models;
 
 namespace DroneDelivery_before.Controllers
 {
     public class HomeController : Controller
     {
         private const int RequestCount = 1000;
-        private readonly HttpClient httpClient;
-        private string payload;
+        private readonly IHttpClientFactory httpClientFactory;
+        private Delivery payload;
 
-        public HomeController(HttpClient httpClient)
+        public HomeController(IHttpClientFactory httpClientFactory)
         {
-            this.httpClient = httpClient;
+            this.httpClientFactory = httpClientFactory;
 
-            this.payload = @"{
-              ""deliveryId"": ""delivery123"",
-              ""ownerId"": ""string"",
-              ""pickupLocation"": ""string"",
-              ""dropoffLocation"": ""string"",
-              ""pickupTime"": ""2019-05-28T20:21:21.240Z"",
-              ""deadline"": ""string"",
-              ""expedited"": true,
-              ""confirmationRequired"": 0,
-              ""packageInfo"": {
-                            ""packageId"": ""package1234567"",
-                ""containerSize"": 0,
-                ""weight"": 0,
-                ""tag"": ""string""
-              }
-            }";
+            this.payload = new Delivery()
+            {
+                DeliveryId = "delivery123",
+                OwnerId = "owner123",
+                PickupLocation = "pickup",
+                DropoffLocation = "dropoff",
+                PickupTime = DateTime.Now.AddDays(3),
+                Deadline = "deadline",
+                Expedited = true,
+                ConfirmationRequired = ConfirmationRequired.None,
+                PackageInfo = new PackageInfo()
+                {
+                    PackageId = "package1234567",
+                    Size = ContainerSize.Small,
+                    Weight = 0,
+                    Tag = "tag"
+                }
+            };
         }
 
         public IActionResult Index()
@@ -42,12 +45,13 @@ namespace DroneDelivery_before.Controllers
         [Route("/[controller]/SendRequests")]
         public async Task<IActionResult> SendRequests()
         {
+            var httpClient = httpClientFactory.CreateClient();
             var urlBuilder = new UriBuilder(this.Request.Scheme, this.Request.Host.Host);
-            urlBuilder.Path = "api/DeliveryRequests?subscription-key=2ba32e67aab041aca4fb9e33e956a1c6";
+            httpClient.BaseAddress = urlBuilder.Uri;
 
             for (int i = 0; i < RequestCount; i++)
             {
-                var response = await httpClient.PostAsync(urlBuilder.Uri.ToString(), new StringContent(payload));
+                var response = await httpClient.PostAsJsonAsync("/api/DeliveryRequests?subscription-key=2ba32e67aab041aca4fb9e33e956a1c6", payload);
             }
             return View();
         }
