@@ -19,7 +19,7 @@ namespace PackageService
 
             //Uses common data store e.g. SQL Azure tables
             Utility.DoWork(100);
-            return Task.FromResult((IActionResult)new CreatedResult("http://dummylocation.com", null));
+            return Task.FromResult((IActionResult)new CreatedResult("http://example.com", null));
         }
     }
 }
