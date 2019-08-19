@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Threading.Tasks;
 using DroneDelivery.Common.Models;
@@ -8,7 +9,7 @@ namespace DroneDelivery_after.Controllers
 {
     public class HomeController : Controller
     {
-        private const int RequestCount = 1000;
+        private const int RequestCount = 100;
         private readonly IHttpClientFactory httpClientFactory;
         private Delivery payload;
 
@@ -42,16 +43,26 @@ namespace DroneDelivery_after.Controllers
 
         [HttpPost()]
         [Route("/[controller]/SendRequests")]
-        public async Task<IActionResult> SendRequests()
+        public IActionResult SendRequests()
         {
+            var stopWatch = new Stopwatch();
+            stopWatch.Start();
+
             var httpClient = httpClientFactory.CreateClient();
             var urlBuilder = new UriBuilder(this.Request.Scheme, this.Request.Host.Host);
             httpClient.BaseAddress = urlBuilder.Uri;
 
+            var tasks = new Task[RequestCount];
+
             for (int i = 0; i < RequestCount; i++)
             {
-                var response = await httpClient.PostAsJsonAsync("/api/DeliveryRequests?subscription-key=2ba32e67aab041aca4fb9e33e956a1c6", payload);
+                tasks[i] = httpClient.PostAsJsonAsync("/api/DeliveryRequests", payload);
             }
+
+            Task.WaitAll(tasks);
+
+            stopWatch.Stop();
+            ViewBag.Message = $"{RequestCount} messages sent in {stopWatch.Elapsed.Seconds} seconds";
             return View();
         }
     }
