@@ -22,6 +22,7 @@ namespace DroneDelivery_before
         public void ConfigureServices(IServiceCollection services)
         {
             services
+                .AddHttpClient()
                 .AddTransient<IDeliveryRepository, DeliveryRepository>()
                 .AddTransient<IDroneScheduler, DroneScheduler>()
                 .AddTransient<IPackageProcessor, PackageProcessor>()
