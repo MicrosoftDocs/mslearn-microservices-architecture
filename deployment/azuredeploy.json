@@ -11,7 +11,7 @@
             "type": "string"
         },
         "location": {
-            "defaultValue": "[resourceGroup().location]",
+            "defaultValue": "centralus",
             "type": "string"
         },
         "hostingPlanName": {
