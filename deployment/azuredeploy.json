@@ -11,7 +11,7 @@
             "type": "string"
         },
         "location": {
-            "defaultValue": "centralus",
+            "defaultValue": "westus",
             "type": "string"
         },
         "hostingPlanName": {
