@@ -21,7 +21,7 @@ namespace DroneDelivery_after.Services
         {
             string jsonString = JsonConvert.SerializeObject(packageInfo);
 
-            StringContent httpContent = new StringContent(jsonString, System.Text.Encoding.UTF8, "application/json");
+            var httpContent = new StringContent(jsonString, System.Text.Encoding.UTF8, "application/json");
 
             var result = await httpClient.PostAsync($"{packageInfo.PackageId}?code={FunctionCode}", httpContent);
             result.EnsureSuccessStatusCode();
