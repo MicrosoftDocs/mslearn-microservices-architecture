@@ -60,7 +60,7 @@ namespace DroneDelivery_before.Controllers
             {
                 string jsonString = JsonConvert.SerializeObject(payload);
 
-                StringContent httpContent = new StringContent(jsonString, System.Text.Encoding.UTF8, "application/json");
+                var httpContent = new StringContent(jsonString, System.Text.Encoding.UTF8, "application/json");
 
                 tasks[i] = httpClient.PostAsync("/api/DeliveryRequests", httpContent);
             }
