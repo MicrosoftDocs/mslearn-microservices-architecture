@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using DroneDelivery.Common.Models;
 using DroneDelivery.Common.Services;
+using Newtonsoft.Json;
 
 namespace DroneDelivery_after.Services
 {
@@ -18,7 +19,11 @@ namespace DroneDelivery_after.Services
 
         public async Task<PackageGen> CreatePackageAsync(PackageInfo packageInfo)
         {
-            var result = await httpClient.PutAsJsonAsync($"{packageInfo.PackageId}?code={FunctionCode}", packageInfo);
+            string jsonString = JsonConvert.SerializeObject(packageInfo);
+
+            var httpContent = new StringContent(jsonString, System.Text.Encoding.UTF8, "application/json");
+
+            var result = await httpClient.PostAsync($"{packageInfo.PackageId}?code={FunctionCode}", httpContent);
             result.EnsureSuccessStatusCode();
 
             return new PackageGen { Id = packageInfo.PackageId };

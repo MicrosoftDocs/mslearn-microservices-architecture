@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.Swagger;
 using DroneDelivery.Common.Services;
 using DroneDelivery_before.Services;
+using Microsoft.Extensions.Hosting;
 
 namespace DroneDelivery_before
 {
@@ -28,7 +28,7 @@ namespace DroneDelivery_before
                 .AddTransient<IPackageProcessor, PackageProcessor>()
                 .AddTransient<IRequestProcessor, RequestProcessor>();
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddControllersWithViews();
 
             // Enable swagger doc
             services.AddSwaggerGen(c =>
@@ -38,7 +38,7 @@ namespace DroneDelivery_before
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -62,11 +62,11 @@ namespace DroneDelivery_before
 
             app.UseHttpsRedirection();
 
-            app.UseMvc(routes =>
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapRoute(
+                endpoints.MapControllerRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }
